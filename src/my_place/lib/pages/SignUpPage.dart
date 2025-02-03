@@ -1,22 +1,28 @@
-import 'package:flutter/material.dart';
-import 'package:my_place/widgets/mpLogo.dart';
-import 'package:my_place/pages/SignUpPage.dart';
+import 'dart:async';
 
-class SigInPage extends StatefulWidget {
-  const SigInPage({super.key});
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:my_place/controller/signUpController.dart';
+import 'package:my_place/widgets/mpLogo.dart';
+import 'package:my_place/pages/sigInPage.dart';
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<SigInPage> createState() => _SigInPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SigInPageState extends State<SigInPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
-  String? _email;
-  String? _senha;
+
+  final _controller = SignUpcontroller();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Form(
+        body: SingleChildScrollView(
+            child: Form(
       key: _formKey,
       child: Container(
         child: Padding(
@@ -24,7 +30,20 @@ class _SigInPageState extends State<SigInPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Mplogo(isAdmin: true,),
+              Mplogo(),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    labelText: 'Nome',
+                    prefixIcon: Icon(
+                      Icons.person,
+                      size: 24,
+                    )),
+                validator: (nome) => nome == null ? 'Campo obrigatorio' : null,
+                onSaved: _controller.setNome,
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -35,10 +54,9 @@ class _SigInPageState extends State<SigInPage> {
                       Icons.email,
                       size: 24,
                     )),
-                obscureText: true,
                 validator: (email) =>
                     email == null ? 'Campo obrigatorio' : null,
-                onSaved: (email) => _email = email,
+                onSaved: _controller.setEmail,
               ),
               SizedBox(
                 height: 20,
@@ -51,9 +69,23 @@ class _SigInPageState extends State<SigInPage> {
                       size: 24,
                     )),
                 obscureText: true,
+                onChanged: _controller.setSenha,
                 validator: (senha) =>
                     senha == null ? 'Campo obrigatorio' : null,
-                onSaved: (senha) => _senha = senha,
+                onSaved: _controller.setSenha,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    labelText: 'Repita a Senha',
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      size: 24,
+                    )),
+                obscureText: true,
+                validator: _controller.validaSenhaRepetida,
               ),
               SizedBox(
                 height: 20,
@@ -61,30 +93,27 @@ class _SigInPageState extends State<SigInPage> {
               SizedBox(
                   width: 120,
                   child: OutlinedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       final form = _formKey.currentState;
                       if (form?.validate() ?? false) {
                         form?.save();
+                        await _controller.cadastrarUsuario();
                       }
                     },
-                    child: Text('Entrar'),
+                    child: Text('Cadastrar'),
                   )),
               SizedBox(
                   width: 120,
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => SignUpPage(),
-                        )
-                      );
+                      Navigator.of(context).pop();
                     },
-                    child: Text('Cadastrar'),
+                    child: Text('Voltar'),
                   )),
             ],
           ),
         ),
       ),
-    ));
+    )));
   }
 }
