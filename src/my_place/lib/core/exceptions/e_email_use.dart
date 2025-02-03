@@ -1,0 +1,1 @@
+class EmailUseException implements Exception{}
