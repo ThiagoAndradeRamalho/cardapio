@@ -6,8 +6,8 @@ import 'package:my_place/controller/signUpController.dart';
 import 'package:my_place/core/exceptions/e_email.dart';
 import 'package:my_place/core/exceptions/e_email_use.dart';
 import 'package:my_place/core/exceptions/e_weak_password.dart';
-import 'package:my_place/widgets/mpLogo.dart';
-import 'package:my_place/pages/sign_in/sigInPage.dart';
+import 'package:my_place/widgets/mp_logo.dart';
+import 'package:my_place/pages/sigInPage.dart';
 import 'package:my_place/widgets/mp_loading.dart';
 import 'package:my_place/widgets/toasts/toasts_utils.dart';
 

@@ -4,8 +4,9 @@ import 'package:my_place/controller/signInController.dart';
 import 'package:my_place/core/exceptions/e_email.dart';
 import 'package:my_place/core/exceptions/e_password_invalid.dart';
 import 'package:my_place/core/exceptions/e_user_not_found.dart';
-import 'package:my_place/widgets/mpLogo.dart';
-import 'package:my_place/pages/sing_up/SignUpPage.dart';
+import 'package:my_place/pages/homePage.dart';
+import 'package:my_place/widgets/mp_logo.dart';
+import 'package:my_place/pages/SignUpPage.dart';
 import 'package:my_place/widgets/toasts/toasts_utils.dart';
 
 class SigInPage extends StatefulWidget {
@@ -30,9 +31,7 @@ class _SigInPageState extends State<SigInPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Mplogo(
-                isAdmin: true,
-              ),
+              Mplogo(),
               SizedBox(
                 height: 20,
               ),
@@ -80,6 +79,9 @@ class _SigInPageState extends State<SigInPage> {
                         form?.save();
                         try {
                           final user = await _controller.fazLogin();
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => HomePage(user: user!))
+                          );
                         } on FirebaseAuthException {
                           showWarningToast('Usuario não é administrator');
                         } on UserNotFound {

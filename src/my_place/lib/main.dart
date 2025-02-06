@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:my_place/pages/sign_in/sigInPage.dart';
+import 'package:my_place/pages/sigInPage.dart';
 import 'package:oktoast/oktoast.dart';
 
 void main() async {
