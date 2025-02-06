@@ -1,0 +1,1 @@
+class PasswrodInvalidException implements Exception {}

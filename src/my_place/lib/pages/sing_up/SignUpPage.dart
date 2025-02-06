@@ -7,8 +7,9 @@ import 'package:my_place/core/exceptions/e_email.dart';
 import 'package:my_place/core/exceptions/e_email_use.dart';
 import 'package:my_place/core/exceptions/e_weak_password.dart';
 import 'package:my_place/widgets/mpLogo.dart';
-import 'package:my_place/pages/sigInPage.dart';
+import 'package:my_place/pages/sign_in/sigInPage.dart';
 import 'package:my_place/widgets/mp_loading.dart';
+import 'package:my_place/widgets/toasts/toasts_utils.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -113,14 +114,21 @@ class _SignUpPageState extends State<SignUpPage> {
                               });
                               try {
                                 await _controller.cadastrarUsuario();
+                                showSucessToast('Usuario criado com sucesso');
+                                Navigator.of(context).pop();
                               } on EmailUseException {
+                                showWarningToast('Email ja esta em uso!');
                                 print('Email ja esta em uso!');
                               } on WeakPasswordException {
+                                showWarningToast(
+                                    'Senha deve ter no mínimo 6 caracteres');
                                 print('Senha deve ter no mínimo 6 caracteres');
                               } on InvalidEmailException {
+                                showWarningToast('Email invalido!');
                                 print('Email invalido!');
                               } on Exception {
-                                print('Ocorreu um erro inesperado')
+                                showErrorToast('Ocorreu um erro inesperado');
+                                print('Ocorreu um erro inesperado');
                               }
                               setState(() {
                                 _controller.setIsLoading(false);
