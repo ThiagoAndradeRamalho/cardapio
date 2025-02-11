@@ -78,10 +78,11 @@ class _SigInPageState extends State<SigInPage> {
                       if (form?.validate() ?? false) {
                         form?.save();
                         try {
+                          print(
+                              "Senhal ${_controller.senha}  login ${_controller.email}");
                           final user = await _controller.fazLogin();
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => HomePage(user: user!))
-                          );
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => HomePage(user: user!)));
                         } on FirebaseAuthException {
                           showWarningToast('Usuario não é administrator');
                         } on UserNotFound {

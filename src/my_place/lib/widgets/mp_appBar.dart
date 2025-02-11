@@ -4,17 +4,17 @@ import 'package:my_place/widgets/mp_button_icon.dart';
 class MPAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MPAppBar({
     super.key,
-    required this.tittle,
-    required this.withLeading,
+    required this.title,
+    this.withLeading = true,
     this.actions = const[],
   });
 
-  final Widget tittle;
+  final Widget title;
   final bool withLeading;
   final List<Widget> actions;
 
   @override
-  Size get preferredSize => Size.fromHeight(40);
+  Size get preferredSize => Size.fromHeight(56);
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,12 @@ class MPAppBar extends StatelessWidget implements PreferredSizeWidget {
         height: preferredSize.height,
         child: AppBar(
           automaticallyImplyLeading: false,
-          title: tittle,
+          title: title,
           leadingWidth: 40,
-          leading: ! withLeading ? null : MPButtonIcon(
+          leading: withLeading ? MPButtonIcon(
             iconData : Icons.chevron_left,
             onTap: () => Navigator.of(context).pop()
-          ),
+          ) : null,
           actions: actions,
         ),
       )

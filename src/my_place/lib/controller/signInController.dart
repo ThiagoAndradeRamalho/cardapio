@@ -33,10 +33,16 @@ class SignInController {
         password: senha,
       );
 
+      print("UserFireAuth na usuariosss: ${userFireAuth}");
+
       final userFirestore =
           await _usuariosRef.doc(userFireAuth.user!.uid).get();
+
+      print("userFirestore: ${userFirestore}");
       final user =
           UsuarioModel.fromJson(userFirestore.id, userFirestore.data()!);
+
+      print("user: ${user}");
 
       if (user.tipo != "ADMIN") {
         throw AdminInvalidException();
@@ -55,7 +61,6 @@ class SignInController {
           rethrow;
         }
       }
-      
     }
     return null;
   }

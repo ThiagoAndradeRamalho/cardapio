@@ -10,8 +10,6 @@ class MPButtonIcon extends StatelessWidget {
   final IconData iconData;
   final Function onTap;
 
-
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -21,7 +19,7 @@ class MPButtonIcon extends StatelessWidget {
         child: Icon(iconData),
       ),
       borderRadius: BorderRadius.circular(20),
-      onTap: onTap(),
+      onTap: () => onTap(),
     );
   }
 }
