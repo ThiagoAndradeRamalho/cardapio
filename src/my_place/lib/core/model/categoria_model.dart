@@ -5,10 +5,10 @@ class CategoriaModel {
   late String urlImagem;
 
   CategoriaModel({
-    required this.id,
-    required this.nome,
-    required this.descricao,
-    required this.urlImagem,
+    this.id = '',
+    this.nome = '',
+    this.descricao = '',
+    this.urlImagem = '',
   });
 
   CategoriaModel.fromJson(String userId, Map<String, dynamic> json) {
