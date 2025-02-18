@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_place/controller/form_categoria_controller.dart';
+import 'package:my_place/core/model/categoria_model.dart';
+import 'package:my_place/pages/categoriasPage.dart';
 import 'package:my_place/widgets/mp_button_icon.dart';
 
 class FormCategoriaPage extends StatefulWidget {
-  const FormCategoriaPage({super.key});
+  const FormCategoriaPage({
+    super.key,
+    this.categoria,
+  });
+
+  final CategoriaModel? categoria;
 
   @override
   State<FormCategoriaPage> createState() => _FormCategoriaPageState();
@@ -11,7 +19,14 @@ class FormCategoriaPage extends StatefulWidget {
 
 class _FormCategoriaPageState extends State<FormCategoriaPage> {
   final _formKey = GlobalKey<FormState>();
-  FormCategoriaController _controller = FormCategoriaController();
+
+  FormCategoriaController? _controller;
+  @override
+  void initState() {
+    _controller = FormCategoriaController(widget.categoria ?? CategoriaModel());
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +42,10 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
               elevation: 0.5,
               floating: false,
               pinned: true,
-              title: Text('Criar Categoria'),
+              title: Text(_controller?.categoria.nome == '' ||
+                      _controller?.categoria.nome == null
+                  ? 'Criar Categoria'
+                  : 'Editar Categoria'),
               leadingWidth: 40,
               leading: MPButtonIcon(
                 iconData: Icons.chevron_left,
@@ -40,7 +58,8 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                       final form = _formKey.currentState;
                       if (form!.validate()) {
                         form.save();
-                        await _controller.salvarCategoria();
+                        await _controller!.salvaCategoria();
+                        Navigator.of(context).pop();
                       }
                     }),
               ],
@@ -52,54 +71,48 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                         ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              width: double.maxFinite,
-                              color: Colors.deepOrange,
-                              child: Center(
-                                child: Icon(
-                                  Icons.image_outlined,
-                                  size: 100,
-                                  color: Colors.deepOrange,
-                                ),
-                              ),
-                            )),
+                                width: double.maxFinite,
+                                color: Colors.deepOrange,
+                                child: _controller?.categoria.urlImagem == null
+                                    ? Center(
+                                        child: Icon(
+                                          Icons.image_outlined,
+                                          size: 100,
+                                          color: Colors.deepOrange,
+                                        ),
+                                      )
+                                    : Hero(
+                                        tag: _controller?.categoria.id ?? '',
+                                        child: Image.network(
+                                          _controller!.categoria.urlImagem,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Center(
+                                                child: Icon(Icons.error,
+                                                    color: Colors.red));
+                                          },
+                                        )))),
                         Positioned(
                           bottom: 8,
                           right: 8,
                           child: Material(
                             borderRadius: BorderRadiusDirectional.circular(30),
                             color: Colors.deepOrange,
-                            child: PopupMenuButton(
+                            child: IconButton(
                               icon: Icon(
                                 Icons.camera_alt,
                                 color: Colors.deepOrange,
                               ),
-                              itemBuilder: (_) => [
-                                PopupMenuItem<String>(
-                                    value: 'camera',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.photo_camera,
-                                          color: Colors.deepOrange,
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text('Camera'),
-                                      ],
-                                    )),
-                                PopupMenuItem<String>(
-                                    value: 'Galeria',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.photo_library,
-                                          color: Colors.deepOrange,
-                                        ),
-                                        SizedBox(width: 8),
-                                        Text('Galeria'),
-                                      ],
-                                    )),
-                              ],
-                              onSelected: (valor) async {},
+                              onPressed: () async {
+                                String? urlImagem =
+                                    await _controller!.openDialog(context);
+                                setState(
+                                  () => _controller!
+                                      .setUrlImagemCategoria(urlImagem),
+                                );
+                                logger.i(urlImagem);
+                              },
                             ),
                           ),
                         )
@@ -119,6 +132,7 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                   Container(
                     width: 300,
                     child: TextFormField(
+                      initialValue: _controller?.categoria.nome ?? "",
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -128,14 +142,14 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                       ),
                       validator: (nome) =>
                           nome!.isEmpty ? 'Campo Obrigatorio' : null,
-                      onSaved: _controller.setNomeCategoria,
+                      onSaved: _controller!.setNomeCategoria,
                     ),
                   ),
                   SizedBox(height: 16),
                   Container(
                     width: 400,
                     child: TextFormField(
-                      initialValue:  '',
+                      initialValue: _controller?.categoria.descricao ?? '',
                       maxLines: 5,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -146,7 +160,7 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                       ),
                       validator: (descricao) =>
                           descricao!.isEmpty ? 'Campo Obrigatorio' : null,
-                      onSaved: _controller.setDescricaoCategoria,
+                      onSaved: _controller!.setDescricaoCategoria,
                     ),
                   )
                 ],

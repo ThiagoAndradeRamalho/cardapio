@@ -26,7 +26,7 @@ class MpListTile extends StatelessWidget {
         ),
         title: title,
         trailing: trailing,
-        onTap: onTap(),
+        onTap: () => onTap(),
     );
   }
 }

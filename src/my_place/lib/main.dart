@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:my_place/pages/categoriasPage.dart';
 import 'package:my_place/pages/sigInPage.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: ListaCategoriaPage(),
+        home: SigInPage(),
       )
     );
   }

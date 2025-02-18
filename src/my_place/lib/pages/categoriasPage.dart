@@ -40,7 +40,11 @@ class ListaCategoriaPage extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: _controller.categoriasStream(),
         builder: (context, snapshot) {
-          logger.i(snapshot.hasData);
+          logger.i("Snapshot estado: ${snapshot.connectionState}");
+          logger.i("Tem dados? ${snapshot.hasData}");
+          logger.i(
+              "Quantidade de categorias: ${snapshot.data?.docs.length ?? 0}");
+
           if (snapshot.hasData) {
             logger.i("ENTROU");
             final categorias =
@@ -51,18 +55,29 @@ class ListaCategoriaPage extends StatelessWidget {
               return MpListView(
                   itemCount: categorias.length,
                   itemBuilder: (context, i) => MpListTile(
-                        leading: categorias[i].urlImagem != null
-                            ? CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(categorias[i].urlImagem),
-                              )
-                            : Icon(Icons.category),
+                        leading: Hero(
+                          tag: categorias[i].id,
+                          child: categorias[i].urlImagem != null
+                              ? CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(categorias[i].urlImagem),
+                                )
+                              : Icon(Icons.category),
+                        ),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {},
                         ),
                         title: Text(categorias[i].nome),
-                        onTap: () {},
+                        onTap: () {
+                          print("Categoria válida, navegando...");
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  FormCategoriaPage(categoria: categorias[i]),
+                            ),
+                          );
+                        },
                       ));
             }
           } else if (snapshot.connectionState == ConnectionState.waiting) {
