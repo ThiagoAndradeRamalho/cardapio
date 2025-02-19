@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:my_place/controller/listaCategoriaController.dart';
 import 'package:logger/logger.dart';
-import 'package:my_place/pages/form_categoria_page.dart';
+import 'package:my_place/controller/lista_produto_controller.dart';
+import 'package:my_place/pages/form_produto_page.dart';
 import 'package:my_place/widgets/mp_appBar.dart';
 import 'package:my_place/widgets/mp_button_icon.dart';
 import 'package:my_place/widgets/mp_empty.dart';
@@ -12,69 +12,71 @@ import 'package:my_place/widgets/mp_loading.dart';
 
 final Logger logger = Logger();
 
-class ListaCategoriaPage extends StatelessWidget {
-  ListaCategoriaPage({
+class ListaProdutoPage extends StatelessWidget {
+  ListaProdutoPage({
     super.key,
   });
 
-  final _controller = ListaCategoriaController();
+  final _controller = ListaProdutoController();
 
   @override
   Widget build(BuildContext context) {
     //logger.i(user.email);
     return Scaffold(
       appBar: MPAppBar(
-        title: Text('Lista de Categorias'),
+        title: Text('Lista de Produtos'),
         actions: [
           MPButtonIcon(
               iconData: Icons.add,
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => FormCategoriaPage(),
+                    builder: (_) => FormProdutoPage(),
                   ),
                 );
               })
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _controller.categoriasStream(),
+        stream: _controller.produtosStream,
         builder: (context, snapshot) {
           logger.i("Snapshot estado: ${snapshot.connectionState}");
           logger.i("Tem dados? ${snapshot.hasData}");
           logger.i(
-              "Quantidade de categorias: ${snapshot.data?.docs.length ?? 0}");
+              "Quantidade de produtos: ${snapshot.data?.docs.length ?? 0}");
 
           if (snapshot.hasData) {
             logger.i("ENTROU");
-            final categorias =
-                _controller.getCategoriasFromDocs(snapshot.data!.docs);
-            if (categorias.isEmpty) {
+            final produtos =
+                _controller.getProdutosFromData(snapshot.data!.docs);
+            if (produtos.isEmpty) {
               return MPEmpty();
             } else {
               return MpListView(
-                  itemCount: categorias.length,
+                  itemCount: produtos.length,
                   itemBuilder: (context, i) => MpListTile(
                         leading: Hero(
-                          tag: categorias[i].id,
-                          child: categorias[i].urlImagem != null
+                          tag: produtos[i].id,
+                          child: produtos[i].urlImagem != null
                               ? CircleAvatar(
                                   backgroundImage:
-                                      NetworkImage(categorias[i].urlImagem),
+                                      NetworkImage(produtos[i].urlImagem),
                                 )
-                              : Icon(Icons.category),
+                              : Icon(Icons.fastfood),
                         ),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
-                          onPressed: () {},
+                          onPressed: () async {
+                           await _controller.deleteProduto(produtos[i]);
+                          },
                         ),
-                        title: Text(categorias[i].nome),
+                        title: Text(produtos[i].nome),
                         onTap: () {
-                          print("Categoria válida, navegando...");
+                          print("Produto válida, navegando...");
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) =>
-                                  FormCategoriaPage(categoria: categorias[i]),
+                                  FormProdutoPage(produto: produtos[i]),
                             ),
                           );
                         },

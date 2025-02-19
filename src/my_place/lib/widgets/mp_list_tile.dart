@@ -9,7 +9,7 @@ class MpListTile extends StatelessWidget {
     required this.onTap,
   });
 
-  final Widget ?leading;
+  final Widget? leading;
   final Widget trailing;
   final Widget title;
   final Function onTap;
@@ -17,16 +17,18 @@ class MpListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: Colors.amberAccent,
+      tileColor: const Color.fromARGB(255, 243, 237, 237),
       visualDensity: VisualDensity.compact,
-      leading: leading == null ? null : Container(
-        alignment: Alignment.center,
-        width: 36,
-        child: leading,
-        ),
-        title: title,
-        trailing: trailing,
-        onTap: () => onTap(),
+      leading: leading == null
+          ? null
+          : Container(
+              alignment: Alignment.center,
+              width: 50,
+              child: leading,
+            ),
+      title: title,
+      trailing: trailing,
+      onTap: () => onTap(),
     );
   }
 }

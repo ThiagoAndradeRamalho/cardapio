@@ -20,8 +20,10 @@ class MPAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SizedBox(
+        
         height: preferredSize.height,
         child: AppBar(
+          
           automaticallyImplyLeading: false,
           title: title,
           leadingWidth: 40,

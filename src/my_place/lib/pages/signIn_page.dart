@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_place/controller/signInController.dart';
+import 'package:my_place/controller/signin_controller.dart';
 import 'package:my_place/core/exceptions/e_email.dart';
 import 'package:my_place/core/exceptions/e_password_invalid.dart';
 import 'package:my_place/core/exceptions/e_user_not_found.dart';
-import 'package:my_place/pages/homePage.dart';
+import 'package:my_place/pages/home_page.dart';
 import 'package:my_place/widgets/mp_logo.dart';
-import 'package:my_place/pages/SignUpPage.dart';
+import 'package:my_place/pages/signUp_page.dart';
 import 'package:my_place/widgets/toasts/toasts_utils.dart';
 
 class SigInPage extends StatefulWidget {

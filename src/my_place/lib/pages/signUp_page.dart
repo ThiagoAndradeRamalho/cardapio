@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_place/controller/signUpController.dart';
+import 'package:my_place/controller/signup_controller.dart';
 import 'package:my_place/core/exceptions/e_email.dart';
 import 'package:my_place/core/exceptions/e_email_use.dart';
 import 'package:my_place/core/exceptions/e_weak_password.dart';
 import 'package:my_place/widgets/mp_logo.dart';
-import 'package:my_place/pages/sigInPage.dart';
+import 'package:my_place/pages/signIn_page.dart';
 import 'package:my_place/widgets/mp_loading.dart';
 import 'package:my_place/widgets/toasts/toasts_utils.dart';
 

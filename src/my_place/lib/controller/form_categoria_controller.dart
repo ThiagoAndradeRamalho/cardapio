@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_place/core/model/categoria_model.dart';
-import 'package:my_place/pages/categoriasPage.dart';
+import 'package:my_place/pages/lista_categoria_page.dart';
 import 'package:my_place/widgets/mp_alert_dialog.dart';
 
 class FormCategoriaController {

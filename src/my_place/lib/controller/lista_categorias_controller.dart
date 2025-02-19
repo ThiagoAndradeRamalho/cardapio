@@ -18,6 +18,10 @@ class ListaCategoriaController {
     });
   }
 
+  Future<void> deleteCategoria(CategoriaModel categoria) async {
+    await categoriasRef.doc(categoria.id).delete();
+  }
+
   Stream<QuerySnapshot> categoriasStream() {
     return _categoriasStream;
   }

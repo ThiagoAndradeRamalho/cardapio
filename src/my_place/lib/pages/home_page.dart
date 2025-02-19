@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_place/core/model/usuario_model.dart';
 import 'package:logger/logger.dart';
-import 'package:my_place/pages/categoriasPage.dart';
+import 'package:my_place/pages/lista_categoria_page.dart';
+import 'package:my_place/pages/lista_produto_page.dart';
 import 'package:my_place/widgets/mp_appBar.dart';
 import 'package:my_place/widgets/mp_logo.dart';
 
@@ -37,7 +38,7 @@ class HomePage extends StatelessWidget {
                 page: ListaCategoriaPage(),
                 iconData: Icons.category),
             _Button(
-                text: 'Produtos', page: Scaffold(), iconData: Icons.fastfood),
+                text: 'Produtos', page: ListaProdutoPage(), iconData: Icons.fastfood),
             _Button(
                 text: 'Promoções', page: Scaffold(), iconData: Icons.campaign),
             _Button(
@@ -57,7 +58,6 @@ class HomePage extends StatelessWidget {
 
 class _Button extends StatelessWidget {
   const _Button({
-    super.key,
     required this.text,
     required this.page,
     required this.iconData,
@@ -75,11 +75,9 @@ class _Button extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {
-            print("Botão pressionado!");
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) {
-                print("Tentando abrir ListaCategoriaPage...");
-                return ListaCategoriaPage();
+                return page;
               }),
             );
           },

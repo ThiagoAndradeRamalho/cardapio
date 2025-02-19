@@ -1,29 +1,37 @@
+import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
-import 'package:my_place/controller/form_categoria_controller.dart';
-import 'package:my_place/core/model/categoria_model.dart';
-import 'package:my_place/pages/lista_categoria_page.dart';
+import 'package:flutter/services.dart';
+import 'package:my_place/controller/form_produto_controller.dart';
+import 'package:my_place/core/model/produto_model.dart';
+import 'package:my_place/core/preco_utilis.dart';
 import 'package:my_place/widgets/mp_button_icon.dart';
 
-class FormCategoriaPage extends StatefulWidget {
-  const FormCategoriaPage({
+class FormProdutoPage extends StatefulWidget {
+  const FormProdutoPage({
     super.key,
-    this.categoria,
+    this.produto,
   });
 
-  final CategoriaModel? categoria;
+  final ProdutoModel? produto;
 
   @override
-  State<FormCategoriaPage> createState() => _FormCategoriaPageState();
+  State<FormProdutoPage> createState() => _FormProdutoPageState();
 }
 
-class _FormCategoriaPageState extends State<FormCategoriaPage> {
+class _FormProdutoPageState extends State<FormProdutoPage> {
   final _formKey = GlobalKey<FormState>();
+  MoneyMaskedTextController? _precoController;
+  FormProdutoController? _controller;
 
-  FormCategoriaController? _controller;
   @override
   void initState() {
-    _controller = FormCategoriaController(widget.categoria ?? CategoriaModel());
-
+    _controller = FormProdutoController(widget.produto ?? ProdutoModel(
+    ));
+    _precoController = MoneyMaskedTextController(
+      decimalSeparator: ',',
+      thousandSeparator: '.',
+      leftSymbol: 'R\$',
+    )..text = _controller!.produto.preco;
     super.initState();
   }
 
@@ -41,10 +49,10 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
               elevation: 0.5,
               floating: false,
               pinned: true,
-              title: Text(_controller?.categoria.nome == '' ||
-                      _controller?.categoria.nome == null
-                  ? 'Criar Categoria'
-                  : 'Editar Categoria'),
+              title: Text(_controller?.produto.nome == '' ||
+                      _controller?.produto.nome == null
+                  ? 'Criar Produto'
+                  : 'Editar Produto'),
               leadingWidth: 40,
               leading: MPButtonIcon(
                 iconData: Icons.chevron_left,
@@ -57,7 +65,7 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                       final form = _formKey.currentState;
                       if (form!.validate()) {
                         form.save();
-                        await _controller!.salvaCategoria();
+                        await _controller!.salvaProduto();
                         Navigator.of(context).pop();
                       }
                     }),
@@ -72,7 +80,7 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                             child: Container(
                                 width: double.maxFinite,
                                 color: const Color.fromARGB(255, 232, 184, 169),
-                                child: _controller?.categoria.urlImagem == null
+                                child: _controller?.produto.urlImagem == null
                                     ? Center(
                                         child: Icon(
                                           Icons.image_outlined,
@@ -82,9 +90,9 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                                         ),
                                       )
                                     : Hero(
-                                        tag: _controller?.categoria.id ?? '',
+                                        tag: _controller?.produto.id ?? '',
                                         child: Image.network(
-                                          _controller!.categoria.urlImagem,
+                                          _controller!.produto.urlImagem,
                                           fit: BoxFit.cover,
                                           errorBuilder:
                                               (context, error, stackTrace) {
@@ -110,9 +118,8 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                                     await _controller!.openDialog(context);
                                 setState(
                                   () => _controller!
-                                      .setUrlImagemCategoria(urlImagem),
+                                      .setUrlImagemProduto(urlImagem),
                                 );
-                                logger.i(urlImagem);
                               },
                             ),
                           ),
@@ -134,7 +141,7 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                   Container(
                     width: 300,
                     child: TextFormField(
-                      initialValue: _controller?.categoria.nome ?? "",
+                      initialValue: _controller?.produto.nome ?? "",
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
@@ -144,14 +151,14 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                       ),
                       validator: (nome) =>
                           nome!.isEmpty ? 'Campo Obrigatorio' : null,
-                      onSaved: _controller!.setNomeCategoria,
+                      onSaved: _controller!.setNomeProduto,
                     ),
                   ),
                   SizedBox(height: 16),
                   Container(
                     width: 400,
                     child: TextFormField(
-                      initialValue: _controller?.categoria.descricao ?? '',
+                      initialValue: _controller?.produto.descricao ?? '',
                       maxLines: 5,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -162,7 +169,39 @@ class _FormCategoriaPageState extends State<FormCategoriaPage> {
                       ),
                       validator: (descricao) =>
                           descricao!.isEmpty ? 'Campo Obrigatorio' : null,
-                      onSaved: _controller!.setDescricaoCategoria,
+                      onSaved: _controller!.setDescricaoProduto,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    width: 150,
+                    child: TextFormField(
+                      controller: _precoController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r"\d+"),
+                        )
+                      ],
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        labelText: 'Preço',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (preco) {
+                        if (preco == null || preco == 'R\$') {
+                          return 'Campo Obrigatorio';
+                        } else if (PrecoUtilis.getNumeroStringPreco(preco) ==
+                            0) {
+                          return 'O preco do produto nao pode ser 0';
+                        }
+                        return null;
+                      },
+                      onSaved: _controller!.setPrecoProduto,
+                      onChanged: (preco) => _precoController!.text = preco,
                     ),
                   )
                 ],
