@@ -10,7 +10,8 @@ class FormProdutoController {
 
   ProdutoModel _produto;
 
-  final _categoruaRef = FirebaseFirestore.instance.collection('produtos');
+  final _categoriaRef = FirebaseFirestore.instance.collection('produtos');
+  final _categoriasRef = FirebaseFirestore.instance.collection('categorias');
 
   ProdutoModel get produto => _produto;
 
@@ -20,12 +21,14 @@ class FormProdutoController {
             urlImagem: _produto.urlImagem,
           ));
 
+  Future<QuerySnapshot> get categoriasFutures => _categoriasRef.get();
+
   Future<void> salvaProduto() async {
     try {
       if (_produto.id != null || _produto.id != '') {
-        await _categoruaRef.doc(_produto.id).update(_produto.toJson());
+        await _categoriaRef.doc(_produto.id).update(_produto.toJson());
       } else {
-        await _categoruaRef.add(_produto.toJson());
+        await _categoriaRef.add(_produto.toJson());
       }
     } catch (e) {
       print(e);
@@ -41,4 +44,7 @@ class FormProdutoController {
 
   void setDescricaoProduto(String? descricao) =>
       _produto.descricao = descricao!;
+
+  void setCategoriaProduto(String? categoria) =>
+      _produto.categoria = categoria!;
 }

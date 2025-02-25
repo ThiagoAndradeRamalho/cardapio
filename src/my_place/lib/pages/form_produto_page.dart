@@ -5,6 +5,7 @@ import 'package:my_place/controller/form_produto_controller.dart';
 import 'package:my_place/core/model/produto_model.dart';
 import 'package:my_place/core/preco_utilis.dart';
 import 'package:my_place/widgets/mp_button_icon.dart';
+import 'package:select_form_field/select_form_field.dart';
 
 class FormProdutoPage extends StatefulWidget {
   const FormProdutoPage({
@@ -25,8 +26,7 @@ class _FormProdutoPageState extends State<FormProdutoPage> {
 
   @override
   void initState() {
-    _controller = FormProdutoController(widget.produto ?? ProdutoModel(
-    ));
+    _controller = FormProdutoController(widget.produto ?? ProdutoModel());
     _precoController = MoneyMaskedTextController(
       decimalSeparator: ',',
       thousandSeparator: '.',
@@ -79,14 +79,14 @@ class _FormProdutoPageState extends State<FormProdutoPage> {
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
                                 width: double.maxFinite,
-                                color: const Color.fromARGB(255, 232, 184, 169),
-                                child: _controller?.produto.urlImagem == null
+                                color: const Color.fromARGB(255, 251, 245, 243),
+                                child: _controller?.produto.urlImagem == ''
                                     ? Center(
                                         child: Icon(
                                           Icons.image_outlined,
                                           size: 100,
                                           color: const Color.fromARGB(
-                                              255, 255, 255, 255),
+                                              255, 236, 152, 137),
                                         ),
                                       )
                                     : Hero(
@@ -99,7 +99,7 @@ class _FormProdutoPageState extends State<FormProdutoPage> {
                                             return Center(
                                                 child: Icon(Icons.error,
                                                     color: const Color.fromARGB(
-                                                        255, 144, 130, 129)));
+                                                        255, 234, 234, 234)));
                                           },
                                         )))),
                         Positioned(
@@ -138,6 +138,20 @@ class _FormProdutoPageState extends State<FormProdutoPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(
+                    width: 300,
+                    child: SelectFormField(
+                      initialValue: _controller!.produto.categoria,
+                      labelText: 'Categoria',
+                      items: categorias.map((categoria) => {
+                        'value': categoria,
+                        'label': categoria,
+                      }).toList(),
+                      validator: (categoria) => categoria == '' ? 'Campo Obrigatorio' : null,
+                      onSaved: (categoria) => _controller?.setCategoriaProduto,
+                    ),
+                  ),
+
                   Container(
                     width: 300,
                     child: TextFormField(
