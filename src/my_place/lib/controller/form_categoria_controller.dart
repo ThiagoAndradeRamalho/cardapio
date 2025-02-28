@@ -21,7 +21,7 @@ class FormCategoriaController {
 
   Future<void> salvaCategoria() async {
     try {
-      if (_categoria.id != null || _categoria.id != '') {
+      if (_categoria.id.isNotEmpty) {
         await _categoruaRef.doc(_categoria.id).update(_categoria.toJson());
       } else {
         await _categoruaRef.add(_categoria.toJson());
